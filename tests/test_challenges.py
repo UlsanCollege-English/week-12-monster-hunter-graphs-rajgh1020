@@ -87,7 +87,6 @@ def test_build_hunter_map_disconnected_components():
 
 
 def test_build_hunter_map_star_topology():
-    # One hub connected to many spokes — common threat-hub shape
     edges = [
         ("Train Station", "Old Theater"),
         ("Train Station", "Marsh"),
@@ -141,9 +140,20 @@ def test_build_weighted_hunter_map_keeps_lowest_duplicate_weight():
     assert graph["Train Station"]["Old Theater"] == 4
 
 
-@pytest.mark.parametrize("bad_weight", [0, -1, -10])
-def test_build_weighted_hunter_map_rejects_non_positive_weights(bad_weight):
-    edges = [("Old Theater", "Train Station", bad_weight)]
+def test_build_weighted_hunter_map_rejects_zero_weight():
+    edges = [("Old Theater", "Train Station", 0)]
+    with pytest.raises(ValueError):
+        build_weighted_hunter_map(edges)
+
+
+def test_build_weighted_hunter_map_rejects_negative_weight():
+    edges = [("Old Theater", "Train Station", -1)]
+    with pytest.raises(ValueError):
+        build_weighted_hunter_map(edges)
+
+
+def test_build_weighted_hunter_map_rejects_large_negative_weight():
+    edges = [("Old Theater", "Train Station", -10)]
     with pytest.raises(ValueError):
         build_weighted_hunter_map(edges)
 
@@ -229,7 +239,6 @@ def test_map_summary_triangle():
 
 
 def test_map_summary_disconnected_graph():
-    # Two separate pairs — 4 locations, 2 routes
     graph = {
         "Old Theater": ["Train Station"],
         "Train Station": ["Old Theater"],
@@ -240,7 +249,6 @@ def test_map_summary_disconnected_graph():
 
 
 def test_map_summary_isolated_node():
-    # A location with no routes still counts as a location
     graph = {
         "Old Theater": ["Train Station"],
         "Train Station": ["Old Theater"],
@@ -285,7 +293,6 @@ def test_most_connected_location_single_node():
 
 
 def test_most_connected_location_all_nodes_tied():
-    # Every node has degree 1 — alphabetically first wins
     graph = {
         "Zebra Pit": ["Marsh"],
         "Marsh": ["Zebra Pit"],
