@@ -31,7 +31,17 @@ def build_hunter_map(edges: list[tuple[str, str]]) -> dict[str, list[str]]:
         - Include every location that appears in the input.
         - Do not duplicate neighbors if the same route appears more than once.
     """
-    raise NotImplementedError
+    graph: dict[str, set[str]] = {}
+
+    for a, b in edges:
+        if a not in graph:
+            graph[a] = set()
+        if b not in graph:
+            graph[b] = set()
+        graph[a].add(b)
+        graph[b].add(a)
+
+    return {location: list(neighbors) for location, neighbors in graph.items()}
 
 
 def build_weighted_hunter_map(
@@ -54,7 +64,25 @@ def build_weighted_hunter_map(
         - If danger score is 0 or negative, raise ValueError.
         - If the same route appears more than once, keep the lowest score.
     """
-    raise NotImplementedError
+    graph: dict[str, dict[str, int]] = {}
+
+    for a, b, weight in edges:
+        if weight <= 0:
+            raise ValueError(
+                f"Danger score must be a positive integer, got {weight}."
+            )
+
+        if a not in graph:
+            graph[a] = {}
+        if b not in graph:
+            graph[b] = {}
+
+        current_ab = graph[a].get(b)
+        new_weight = weight if current_ab is None else min(current_ab, weight)
+        graph[a][b] = new_weight
+        graph[b][a] = new_weight
+
+    return graph
 
 
 def map_summary(graph: dict[str, list[str]]) -> dict[str, int]:
@@ -77,7 +105,9 @@ def map_summary(graph: dict[str, list[str]]) -> dict[str, int]:
 
         returns {"locations": 3, "routes": 2}
     """
-    raise NotImplementedError
+    locations = len(graph)
+    total_edges = sum(len(neighbors) for neighbors in graph.values())
+    return {"locations": locations, "routes": total_edges // 2}
 
 
 def most_connected_location(graph: dict[str, list[str]]) -> str | None:
@@ -91,7 +121,10 @@ def most_connected_location(graph: dict[str, list[str]]) -> str | None:
         If the graph is empty, return None.
         If there is a tie, return the alphabetically first location.
     """
-    raise NotImplementedError
+    if not graph:
+        return None
+
+    return min(graph, key=lambda loc: (-len(graph[loc]), loc))
 
 
 def priority_hunt_order(reports: list[tuple[int, str]]) -> list[str]:
@@ -108,4 +141,7 @@ def priority_hunt_order(reports: list[tuple[int, str]]) -> list[str]:
     Requirement:
         Use heapq.
     """
-    raise NotImplementedError
+    heap = list(reports)
+    heapq.heapify(heap)
+
+    return [heapq.heappop(heap)[1] for _ in range(len(heap))]
