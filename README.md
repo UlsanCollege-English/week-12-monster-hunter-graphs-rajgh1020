@@ -1,12 +1,11 @@
-```markdown
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/80z-ZS6n)
 # Week 12: Monster Hunter Graphs
 
 ## Student
 
-Name:Raj Ghimire
+Name: Raj Ghimire
 
-Student ID:2412076
+Student ID: 2412076
 
 ## Summary
 
@@ -77,7 +76,7 @@ pytest -q
 Result:
 
 ```text
-39 passed in 0.04s
+39 passed in 0.XXs
 ```
 
 ## Assistance & Sources
@@ -92,4 +91,3 @@ Other sources used:
 
 - Python docs — `heapq` module: https://docs.python.org/3/library/heapq.html
 - Python docs — `dict` and `set`: https://docs.python.org/3/library/stdtypes.html
-```
